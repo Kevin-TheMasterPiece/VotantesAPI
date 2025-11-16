@@ -1,0 +1,36 @@
+
+services:
+  db:
+    image: postgres:15
+    container_name: votantes_db
+    environment:
+      POSTGRES_DB: votantesdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - votantes_network
+
+  web:
+    build: .
+    container_name: votantes_api
+    command: gunicorn VotantesAPI.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - votantes_network
+
+volumes:
+  postgres_data:
+  static_volume:
+
+networks:
+  votantes_network:
