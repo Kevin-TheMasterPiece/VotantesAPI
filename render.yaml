@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: votantes-api
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+
+    envVars:
+      - key: DATABASE_NAME
+        sync: false
+      - key: DATABASE_USER
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: DATABASE_HOST
+        sync: false
+      - key: DATABASE_PORT
+        sync: false
+      - key: DJANGO_SECRET_KEY
+        sync: false
+
+    releaseCommand: |
+      python manage.py migrate &&
+      python manage.py collectstatic --noinput
