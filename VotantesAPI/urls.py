@@ -19,9 +19,20 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from django.contrib.auth import get_user_model
+from django.http import HttpResponse
+
+def crear_admin(request):
+    User = get_user_model()
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser("admin", "admin@example.com", "admin123")
+        return HttpResponse("Superusuario creado!")
+    return HttpResponse("El superusuario ya existe")
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/votantes/', include('votantes.urls')),
+    path("crear-admin/", crear_admin),
 ]
 
 if settings.DEBUG:
