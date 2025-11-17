@@ -19,8 +19,19 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from django.contrib.auth import get_user_model
 from django.http import HttpResponse
+from django.urls import path
+from django.core.management import call_command
+
+def run_migrations(request):
+    try:
+        call_command('migrate')
+        return HttpResponse("Migraciones ejecutadas correctamente.")
+    except Exception as e:
+        return HttpResponse(f"Error ejecutando migraciones: {e}")
+
+
+from django.contrib.auth import get_user_model
 
 def crear_admin(request):
     User = get_user_model()
@@ -33,6 +44,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/votantes/', include('votantes.urls')),
     path("crear-admin/", crear_admin),
+    path('run-migrations/', run_migrations),
 ]
 
 if settings.DEBUG:
